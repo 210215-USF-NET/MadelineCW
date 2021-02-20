@@ -7,7 +7,7 @@ namespace auctionDL
     {
         Art auctionItem { get; set; }
         DateTime closingDate { get; set; }
-        Bid[] Bids;
-        int SellerId;
+        Bid[] Bids {get; set;}
+        int SellerId{get; set;}
     }
 }

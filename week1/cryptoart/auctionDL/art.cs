@@ -5,17 +5,18 @@ namespace auctionDL
 {
     public class Art
     {
-        int id;
-        string name;
-        string description;
-        object[] blacklist;
-        object [] provenence;
-        object thumbnail;
-        object fullart;
-        string[] keywords;
-        int SeriesNumber;
-        int MaxSeries;
-        double BuyNoWPrice;
-        double CurrentValue;
+        int id {get; set;}
+        string name {get; set;}
+        string description {get; set;}
+        string ArtistStatement {get;set;}
+        object[] blacklist {get; set;}
+        object [] provenence{get; set;}
+        object thumbnail{get; set;}
+        object fullart{get; set;}
+        string[] keywords{get;set;}
+        int SeriesNumber{get;set;}
+        int MaxSeries{get; set;}
+        double BuyNoWPrice{get; set;}
+        double CurrentValue{get; set;}
     }
 }
