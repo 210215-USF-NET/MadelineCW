@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Configuration;
 
 namespace auctionDL
 {
@@ -9,7 +10,7 @@ namespace auctionDL
     {
 
         private string json;
-        private string filepath = "D:/train/MadelineCW/week1/cryptoart/auctionDL/collectorFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot")+"collectorFile.json";
 
         public Collector addCollector(Collector customer)
         {
