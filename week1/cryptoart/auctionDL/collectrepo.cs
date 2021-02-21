@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Configuration;
-
+using auctionBL;
 namespace auctionDL
 {
-    public class collectrepo
+    public class collectrepo : IcollectorReo
     {
 
         private string json;
         private string filepath = ConfigurationManager.AppSettings.Get("dataRoot")+"collectorFile.json";
 
-        public Collector addCollector(Collector customer)
+        public Collector AddCollector(Collector customer)
         {
             List<Collector> customerList = GetCollectors();
             
             if (CollectorAlreadyExists(customer.Id,customerList))
             {
-                //log customer exists
+                logging.log("collector Id Exists, No need To Add to Collection");
                 return customer;
             }
 
             customerList.Add(customer);
+            logging.log("adding customer "+customer.Id+" to repository");
             json = JsonSerializer.Serialize(customerList);
             File.WriteAllText(filepath,json);
             return customer;
@@ -37,7 +38,7 @@ namespace auctionDL
             }
             catch(Exception)
             {
-                //log error
+                logging.log("error with repo file, returning new collector List");
                 return new List<Collector>();
             }
             
