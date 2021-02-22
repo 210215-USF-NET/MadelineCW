@@ -5,7 +5,7 @@ namespace auctionDL
 {
     public class Art
     {
-        int id {get; set;}
+        public int Id {get; set;}
         string name {get; set;}
         string description {get; set;}
         string ArtistStatement {get;set;}

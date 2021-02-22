@@ -8,8 +8,14 @@ namespace auctionDL
     public class Collector
     {
         private string countryCode;
+        private string _name = "";
         public int Id { get; set; }
-        public string Name { get; set; }
+        
+        public string Name {
+            get { return _name; }
+
+            set { _name = value; }
+        }
         public string CountryCode {
             get { return countryCode;
             }
@@ -17,7 +23,7 @@ namespace auctionDL
                 countryCode = value;
             }
         }
-        public Art[] Gallery;
+        public int[] Gallery;
         public Auction[] currentBids;
         public Auction[] BidHistory;
 

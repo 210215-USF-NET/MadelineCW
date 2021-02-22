@@ -4,9 +4,10 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
+
 namespace auctionDL
 {
-    public class collectrepo : IcollectorReo
+    public class collectrepo : IcollectorRepo
     {
 
         private string json;
@@ -16,7 +17,7 @@ namespace auctionDL
         {
             List<Collector> customerList = GetCollectors();
             
-            if (CollectorAlreadyExists(customer.Id,customerList))
+            if (Exists(customer.Id,customerList))
             {
                 logging.log("collector Id Exists, No need To Add to Collection");
                 return customer;
@@ -28,11 +29,12 @@ namespace auctionDL
             File.WriteAllText(filepath,json);
             return customer;
         }
-
+    
         public List<Collector> GetCollectors()
         {
             try
             {
+                
                 json = File.ReadAllText(filepath);
                 return JsonSerializer.Deserialize<List<Collector>>(json);
             }
@@ -45,7 +47,7 @@ namespace auctionDL
         }
 
 
-        public bool CollectorAlreadyExists(int id, List<Collector> collectors)
+        public bool Exists(int id, List<Collector> collectors)
         {
             foreach(Collector c in collectors)
             {
