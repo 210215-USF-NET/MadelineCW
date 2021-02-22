@@ -5,8 +5,9 @@ namespace auctionDL
 {
     public class Bid
     {
-        double BidAmount;
-        DateTime TimeOfBid;
-        int CollectorId;
+        public int Id { get; set; }
+        double BidAmount { get; set; }
+        DateTime TimeOfBid { get; set; }
+        int CollectorId { get; set; }
     }
 }
