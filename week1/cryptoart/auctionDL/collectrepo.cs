@@ -22,7 +22,7 @@ namespace auctionDL
             if (Exists(customer.Id))
             {
                 logging.log("collector Id Exists, No need To Add to Collection");
-                return customer;
+                return customerList[customer.Id];
             }
 
             customer.Id = customerList.Count;
@@ -32,6 +32,11 @@ namespace auctionDL
             return customer;
         }
     
+        public void SaveCollector(Collector customer) {
+            customerList[customer.Id] = customer;
+            SaveJson();
+        }
+
         private void SaveJson() {
             json = JsonSerializer.Serialize(customerList);
             File.WriteAllText(filepath, json);

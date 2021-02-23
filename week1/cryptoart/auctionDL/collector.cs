@@ -9,6 +9,7 @@ namespace auctionDL
     {
         private string countryCode;
         private string _name = "";
+        private bool _registered = false;
         public int Id { get; set; }
         
         public string Name {
@@ -17,12 +18,14 @@ namespace auctionDL
             set { _name = value; }
         }
         public string CountryCode {
-            get { return countryCode;
+            get {
+                return countryCode;
             }
-            set{
+            set {
                 countryCode = value;
             }
         }
+        public bool registered { get; set; }
         public int[] Gallery;
         public Auction[] currentBids;
         public Auction[] BidHistory;
