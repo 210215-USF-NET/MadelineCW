@@ -53,21 +53,8 @@ namespace auctionDL
         public List<Bid> GetBidByIds(int[] ids)
         {
             List<Bid> subcollection = new List<Bid>();
-            int count = 0;
-
-
-
-            foreach (Bid a in cachedBids) {
-
-                if (count > ids.Length) { break; }
-                foreach (int id in ids) {
-                    if (id == a.Id) {
-                        subcollection.Add(a);
-                        count++;
-                        break;
-                    }
-                }
-
+            foreach (int id in ids) {
+                subcollection.Add(cachedBids[id]);
             }
             return subcollection;
         }

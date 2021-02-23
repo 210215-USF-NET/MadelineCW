@@ -50,18 +50,8 @@ namespace auctionDL
         public List<Seller> GetSellerByIds(int[] ids)
         {
             List<Seller> subcollection = new List<Seller>();
-            int count = 0;
-            foreach (Seller a in cachedSellers) {
-
-                if (count > ids.Length) { break; }
-                foreach (int id in ids) {
-                    if (id == a.Id) {
-                        subcollection.Add(a);
-                        count++;
-                        break;
-                    }
-                }
-
+            foreach (int id in ids) {
+                subcollection.Add(cachedSellers[id]);
             }
             return subcollection;
         }

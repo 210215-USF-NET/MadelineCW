@@ -51,18 +51,8 @@ namespace auctionDL
         public List<Art> GetArtByIds(int [] ids)
         {
              List<Art> subcollection=new List<Art>();
-            int count = 0;
-            foreach(Art a in cachedArt) {
-               
-                if (count > ids.Length) { break; }
-                foreach (int id in ids) {
-                    if (id == a.Id) { 
-                        subcollection.Add(a);
-                        count++;
-                        break;
-                    }
-                }
-                
+            foreach (int id in ids) {
+                subcollection.Add(cachedArt[id]);
             }
             return subcollection;
         }
