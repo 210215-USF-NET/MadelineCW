@@ -10,7 +10,7 @@ namespace auctionDL
     class AuctionRepo : Iauctionrepo
     {
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + "auctionFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("auctionData");
         private List<Auction> cachedAuctions;
         public Auction AddAuction(Auction newAuction)
         {

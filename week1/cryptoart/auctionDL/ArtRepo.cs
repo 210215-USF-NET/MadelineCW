@@ -11,7 +11,7 @@ namespace auctionDL
     {
 
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + "artFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artData");
         private List<Art> cachedArt;
         public Art AddArt(Art newArt)
         {

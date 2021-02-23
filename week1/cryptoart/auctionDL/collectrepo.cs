@@ -11,7 +11,7 @@ namespace auctionDL
     {
 
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot")+"collectorFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot")+ ConfigurationManager.AppSettings.Get("collectorData");
         private List<Collector> customerList;
 
 

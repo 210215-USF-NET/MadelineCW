@@ -13,7 +13,7 @@ namespace auctionDL
     class ArtistRepo : IartistRepo
     {
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + "artistsFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artistData");
         private List<Artist> cachedArtists;
         public Artist AddArtist(Artist newArtist)
         {

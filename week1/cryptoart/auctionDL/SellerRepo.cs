@@ -10,7 +10,7 @@ namespace auctionDL
     class SellerRepo : IsellerRepo
     {
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + "SellerFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("sellerData");
         private List<Seller> cachedSellers;
         public Seller AddSeller(Seller newSeller)
         {

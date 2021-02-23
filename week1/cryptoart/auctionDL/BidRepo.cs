@@ -11,7 +11,7 @@ namespace auctionDL
     {
 
         private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + "bidFile.json";
+        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("bidData");
         private List<Bid> cachedBids;
         public Bid AddBid(Bid newBid)
         {
