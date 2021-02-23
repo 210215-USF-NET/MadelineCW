@@ -22,7 +22,9 @@ namespace auctionDL
                 return newBid;
             }
 
+            newBid.Id = cachedBids.Count;
             cachedBids.Add(newBid);
+            
             logging.log("adding bid " + newBid.Id + " to repository");
             json = JsonSerializer.Serialize(cachedBids);
             File.WriteAllText(filepath, json);
@@ -31,10 +33,7 @@ namespace auctionDL
 
         public bool Exists(int id)
         {
-            foreach (Bid a in cachedBids) {
-                if (id == a.Id) { return true; }
-            }
-            return false;
+            return (id < cachedBids.Count);
         }
 
         public List<Bid> GetBids()
@@ -55,6 +54,9 @@ namespace auctionDL
         {
             List<Bid> subcollection = new List<Bid>();
             int count = 0;
+
+
+
             foreach (Bid a in cachedBids) {
 
                 if (count > ids.Length) { break; }

@@ -23,7 +23,7 @@ namespace auctionDL
                 logging.log("Artist Id Exists, No need To Add to List");
                 return newArtist;
             }
-
+            newArtist.Id = cachedArtists.Count;
             cachedArtists.Add(newArtist);
             logging.log("adding art " + newArtist.Id + " to repository");
             json = JsonSerializer.Serialize(cachedArtists);
@@ -33,10 +33,7 @@ namespace auctionDL
 
         public bool Exists(int id)
         {
-            foreach (Artist a in cachedArtists) {
-                if (id == a.Id) { return true; }
-            }
-            return false;
+            return (id < cachedArtists.Count);
         }
 
         public List<Artist> GetArtists()

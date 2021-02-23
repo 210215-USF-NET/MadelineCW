@@ -12,24 +12,32 @@ namespace auctionDL
 
         private string json;
         private string filepath = ConfigurationManager.AppSettings.Get("dataRoot")+"collectorFile.json";
+        private List<Collector> customerList;
+
 
         public Collector AddCollector(Collector customer)
         {
-            List<Collector> customerList = GetCollectors();
+            customerList = GetCollectors();
             
-            if (Exists(customer.Id,customerList))
+            if (Exists(customer.Id))
             {
                 logging.log("collector Id Exists, No need To Add to Collection");
                 return customer;
             }
 
+            customer.Id = customerList.Count;
             customerList.Add(customer);
             logging.log("adding customer "+customer.Id+" to repository");
-            json = JsonSerializer.Serialize(customerList);
-            File.WriteAllText(filepath,json);
+            SaveJson();
             return customer;
         }
     
+        private void SaveJson() {
+            json = JsonSerializer.Serialize(customerList);
+            File.WriteAllText(filepath, json);
+        }
+
+
         public List<Collector> GetCollectors()
         {
             try
@@ -47,13 +55,11 @@ namespace auctionDL
         }
 
 
-        public bool Exists(int id, List<Collector> collectors)
+        public bool Exists(int id)
         {
-            foreach(Collector c in collectors)
-            {
-                if (id == c.Id) { return true; }
-            }
-            return false;
+  
+                return (id< customerList.Count);
+
         }
 
     }

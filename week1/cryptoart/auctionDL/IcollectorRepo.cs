@@ -8,7 +8,7 @@ namespace auctionDL
     {
         public Collector AddCollector(Collector newCollector);
         public List<Collector> GetCollectors();
-        public bool Exists(int id, List<Collector> collectors);
+        public bool Exists(int id);
 
 
     }

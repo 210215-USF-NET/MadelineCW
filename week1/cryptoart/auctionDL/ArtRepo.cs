@@ -21,7 +21,7 @@ namespace auctionDL
                 logging.log("Art Id Exists, No need To Add to List");
                 return newArt;
             }
-
+            newArt.Id = cachedArt.Count;
             cachedArt.Add(newArt);
             logging.log("adding art " + newArt.Id + " to repository");
             json = JsonSerializer.Serialize(cachedArt);
@@ -31,10 +31,7 @@ namespace auctionDL
 
         public bool Exists(int id)
         {
-            foreach (Art a in cachedArt) {
-                if (id == a.Id) { return true; }
-            }
-            return false;
+            return (id < cachedArt.Count);
         }
 
         public List<Art> GetArt()
