@@ -36,8 +36,10 @@ namespace auctionUI
             if (collector.registered) { Console.WriteLine($"welcome {collector.Name}"); }
             else {
                 Console.WriteLine("Please register to continue. What is your name?");
-
                 collector.Name = Console.ReadLine();
+                collector.registered = true;
+                Console.WriteLine("What country are you ordering from?");
+                collector.Location = Console.ReadLine();
                 collector.registered = true;
                 Console.WriteLine($"Thank you for registering! your customer id is: {collector.Id}");
                 cp.SaveCollector(collector);
@@ -55,6 +57,16 @@ namespace auctionUI
 
         }
 
+        static void viewArt()
+        {
+
+        }
+        static void viewBids()
+        {
+
+        }
+
+
         static void Main(string[] args)
         {
             logging.init();
@@ -68,6 +80,9 @@ namespace auctionUI
             actionOptions.Add("buy", new Action(buyArt));
             actionOptions.Add("sell", new Action(sellArt));
             actionOptions.Add("submit", new Action(submitArt));
+            actionOptions.Add("viewArt", new Action(viewArt));
+            actionOptions.Add("viewBids", new Action(viewBids));
+
             actionOptions[Console.ReadLine()]();
 
 

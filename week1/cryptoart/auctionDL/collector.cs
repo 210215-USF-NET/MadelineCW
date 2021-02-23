@@ -17,18 +17,20 @@ namespace auctionDL
 
             set { _name = value; }
         }
-        public string CountryCode {
+        public string Location {
             get {
                 return countryCode;
             }
             set {
+
+
                 countryCode = value;
             }
         }
         public bool registered { get; set; }
-        public int[] Gallery;
-        public Auction[] currentBids;
-        public Auction[] BidHistory;
+        public int[] Gallery { get; set; }
+        public int[] currentBids { get; set; }
+        public int[] BidHistory { get; set; }
 
     }
 }

@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS Seller;
+CREATE TABLE Seller(
+Id SERIAL PRIMARY KEY,
+	name varchar,
+);
