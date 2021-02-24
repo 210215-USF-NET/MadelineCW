@@ -10,7 +10,7 @@ using auctionBL;
 
 namespace auctionDL
 {
-    class ArtistRepo : IartistRepo
+    public class ArtistRepo : IartistRepo
     {
         private string json;
         private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artistData");
@@ -21,15 +21,29 @@ namespace auctionDL
 
             if (Exists(newArtist.Id)) {
                 logging.log("Artist Id Exists, No need To Add to List");
-                return newArtist;
+                cachedArtists[newArtist.Id].registered = true;
+                return cachedArtists[newArtist.Id];
             }
             newArtist.Id = cachedArtists.Count;
+            newArtist.registered = false;
             cachedArtists.Add(newArtist);
-            logging.log("adding art " + newArtist.Id + " to repository");
-            json = JsonSerializer.Serialize(cachedArtists);
-            File.WriteAllText(filepath, json);
+            logging.log("adding artist " + newArtist.Id + " to repository");
+            SaveJson();
             return newArtist;
         }
+
+        public void Save(Artist customer)
+        {
+            cachedArtists[customer.Id] = customer;
+            SaveJson();
+        }
+
+        private void SaveJson()
+        {
+            json = JsonSerializer.Serialize(cachedArtists);
+            File.WriteAllText(filepath, json);
+        }
+
 
         public bool Exists(int id)
         {

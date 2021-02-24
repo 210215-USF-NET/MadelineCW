@@ -22,10 +22,12 @@ namespace auctionDL
             if (Exists(customer.Id))
             {
                 logging.log("collector Id Exists, No need To Add to Collection");
+                customerList[customer.Id].registered = true;
                 return customerList[customer.Id];
             }
 
             customer.Id = customerList.Count;
+            customer.registered = true;
             customerList.Add(customer);
             logging.log("adding customer "+customer.Id+" to repository");
             SaveJson();

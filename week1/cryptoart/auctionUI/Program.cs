@@ -43,7 +43,6 @@ namespace auctionUI
                 collector.registered = true;
                 Console.WriteLine("What country are you ordering from?");
                 collector.Location = Console.ReadLine();
-                collector.registered = true;
                 Console.WriteLine($"Thank you for registering! your customer id is: {collector.Id}");
                 cp.SaveCollector(collector);
             }
@@ -51,15 +50,29 @@ namespace auctionUI
         static void sellArt()
         {
             Console.WriteLine("please enter your seller Id");
+  
+            }
+        
 
+    static void submitArt()
+    {
+        Console.WriteLine("please enter artist Id");
+        artist = new Artist();
+        active = "artist";
+        artist.Id = int.Parse(Console.ReadLine());
+        ArtistRepo cp = new ArtistRepo();
+        artist = cp.AddArtist(artist);
+        if (artist.registered) { Console.WriteLine($"welcome {artist.Name}"); }
+        else {
+            Console.WriteLine("Please register to continue. What is your name?");
+            artist.Name = Console.ReadLine();
+            artist.registered = true;
+            Console.WriteLine("What is your biography?");
+            artist.Biography = Console.ReadLine();
+            Console.WriteLine($"Thank you for registering! your artist id is: {artist.Id}");
+            cp.Save(artist);
         }
-
-        static void submitArt()
-        {
-            Console.WriteLine("please enter artist Id");
-
-        }
-
+    }
         static void viewArt()
         {
 
@@ -73,6 +86,9 @@ namespace auctionUI
             switch(active){
                 case "collector":
                     Console.WriteLine(collector.ToString());
+                    break;
+                case "artist":
+                    Console.WriteLine(artist.ToString());
                     break;
 
             }
@@ -104,13 +120,14 @@ namespace auctionUI
             Console.WriteLine("Welcome to Scarcity: your number one platform for CryptoArt;\n Please Enter What Fuction you'd like to perform.\n");
 
             while (true) {
-
+                menuOptions();
+                /*
                 try { menuOptions(); }
                 catch {
                     Console.WriteLine("please enter a valid option");
                     
                 }
-
+                */
             }
 
 

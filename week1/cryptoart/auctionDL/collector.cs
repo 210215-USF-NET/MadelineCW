@@ -9,7 +9,6 @@ namespace auctionDL
     {
         private string countryCode;
         private string _name = "";
-        private bool _registered = false;
         public int Id { get; set; }
         
         public string Name {
