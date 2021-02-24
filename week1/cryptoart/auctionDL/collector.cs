@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 namespace auctionDL
 {
     /// <summary>
@@ -28,9 +28,27 @@ namespace auctionDL
             }
         }
         public bool registered { get; set; }
-        public int[] Gallery { get; set; }
-        public int[] currentBids { get; set; }
-        public int[] BidHistory { get; set; }
-
+        public List<Art> Gallery { get; set; }
+        public List<Bid> currentBids { get; set; }
+        public List<Bid> BidHistory { get; set; }
+        public override string ToString()
+        {
+            string s = $"Collector:\nId={Id}\nname={Name}\nlocation={Location}\nCollection=";
+            /*
+            foreach (Art a in Gallery) {
+                s += a.ToString() + "/n";
+            }
+            
+            s += "current bids=\n";
+            foreach (Bid b in currentBids) {
+                s += b.ToString() + "/n";
+            }
+            s += "past bids=\n";
+            foreach (Bid b in BidHistory) {
+                s += b.ToString() + "/n";
+            }
+            */
+            return s;
+        }
     }
 }
