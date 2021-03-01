@@ -80,13 +80,6 @@ namespace auctionUI
             }
             while (insub) {
                 subMenu();
-                /*
-                try { menuOptions(); }
-                catch {
-                    Console.WriteLine("please enter a valid option");
-                    
-                }
-                */
             }
 
             
@@ -202,8 +195,11 @@ namespace auctionUI
         {
 
         }
-        static void viewBids()
+        public void viewBids()
         {
+            BidRepo bp = new BidRepo(_context, new BidMapper());
+            bp.ShowBidsByBidder(collector.Id);
+
 
         }
         static void viewProfile()
@@ -242,9 +238,33 @@ namespace auctionUI
             insub = false;
             
         }
-        static void bid()
+       public void bid()
         {
-
+            listAuctions();
+            Console.WriteLine("Enter the id of the Auction You would like to bid on");
+            AuctionRepo cp = new AuctionRepo(_context, new AuctionMapper());
+            int bd = int.Parse(Console.ReadLine());
+            Auction A2Bid=cp.GetAuction(bd);
+            if (A2Bid == null) {
+                Console.WriteLine("please choose a valid auction");
+                return;
+            }
+            BidRepo bp= new BidRepo(_context, new BidMapper());
+            Bid bid = new Bid();
+            Console.WriteLine("how much would you like to bid?");
+            Decimal bidAmount = Decimal.Parse(Console.ReadLine());
+            bid.Amount = bidAmount;
+            Bid highBid = cp.GetHighBid(A2Bid);
+            if (highBid != null) {
+                if (bid.Amount <= highBid.Amount) {
+                    Console.WriteLine($"Highest Bid is {highBid.Amount} please enter a bid of a higher amount");
+                    return;
+                }
+            }
+            bid.Collectorid = collector.Id;
+            bid.Timeofbid = DateTime.Now;
+            bid.Auctionid = A2Bid.Id;
+            bp.AddBid(bid);
         }
 
         static void update()
@@ -342,7 +362,7 @@ namespace auctionUI
             CollectorOptions.Add("update", new Action(update));
             CollectorOptions.Add("bid", new Action(bid));
             CollectorOptions.Add("viewCollection", new Action(viewArt));
-            CollectorOptions.Add("viewCurrentAuctions", new Action(viewAuctions));
+            CollectorOptions.Add("viewBids", new Action(viewBids));
             CollectorOptions.Add("ListAuctions", new Action(listAuctions));
 
 

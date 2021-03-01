@@ -20,6 +20,19 @@ namespace auctionDL
             _context = context;
             _mapper = mapper;
         }
+
+        public Auction GetAuction(int id)
+        {
+            return _context.Auctions.Find(id);
+        }
+
+        public Bid GetHighBid(Auction a2b)
+        {
+            Bid hiBid = _context.Bids.Where(x => x.Auctionid == a2b.Id).OrderBy(y => y.Amount).FirstOrDefault();
+            return hiBid;
+        }
+
+
         public mod.Auction AddAuction(mod.Auction newAuction)
         {
             if (Exists(newAuction.Id)) {
@@ -82,7 +95,13 @@ namespace auctionDL
                 Art art = _context.Arts.Where(x => x.Id == a.Artid).FirstOrDefault();
                 Console.WriteLine($"For Art :{art.Name}");
                 Bid bid = _context.Bids.Where(x => x.Auctionid == a.Id).OrderBy(y=>y.Amount).FirstOrDefault();
-                Console.WriteLine($"Current Winning Bid :{bid.Amount}");
+                if (bid != null) {
+                    Console.WriteLine($"Current Winning Bid :{bid.Amount}");
+                }
+                else {
+                    Console.WriteLine($"No Current Bids");
+
+                }
                 Console.WriteLine("---------------------------------------");
             }
             Console.ForegroundColor = ConsoleColor.Yellow;

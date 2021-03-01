@@ -3,7 +3,7 @@ using mod = auctionModels;
 
 namespace auctionDL
 {
-    class BidMapper : IBidMapper
+    public class BidMapper : IBidMapper
     {
 
         public mod.Bid Parse(Bid bid)

@@ -3,7 +3,7 @@
 
 namespace auctionDL
 {
-    interface IBidMapper
+    public interface IBidMapper
     {
         mod.Bid Parse(Bid bid);
        Bid Parse(mod.Bid bid);

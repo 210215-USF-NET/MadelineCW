@@ -2,7 +2,7 @@
 using mod = auctionModels;
 namespace auctionDL
 {
-    interface IBidRepo
+   public  interface IBidRepo
     {
         public mod.Bid AddBid(mod.Bid newBid);
         public List<mod.Bid> GetBids();
