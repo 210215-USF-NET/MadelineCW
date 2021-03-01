@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Text.Json;
+
 using System.Configuration;
 using auctionBL;
 using mod = auctionModels;
@@ -13,66 +13,63 @@ namespace auctionDL
 {
     public class ArtistRepo : IartistRepo
     {
-        private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artistData");
-        private List<mod.Artist> cachedArtists;
+        private wzvzhuteContext _context;
+        private IArtistMapper _mapper;
+
+
+        public ArtistRepo(wzvzhuteContext context, IArtistMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
         public mod.Artist AddArtist(mod.Artist newArtist)
         {
-            cachedArtists = GetArtists();
-
             if (Exists(newArtist.Id)) {
-                logging.log("Artist Id Exists, No need To Add to List");
-                cachedArtists[newArtist.Id].registered = true;
-                return cachedArtists[newArtist.Id];
+                newArtist = _mapper.Parse(_context.Artists.Find(newArtist.Id));
+
             }
-            newArtist.Id = cachedArtists.Count;
-            newArtist.registered = false;
-            cachedArtists.Add(newArtist);
-            logging.log("adding artist " + newArtist.Id + " to repository");
-            SaveJson();
+            else {
+
+                _context.Artists.Add(_mapper.Parse(newArtist));
+                _context.SaveChanges();
+
+            }
             return newArtist;
         }
 
-        public void Save(mod.Artist customer)
+        public void Save(mod.Artist artist)
         {
-            cachedArtists[customer.Id] = customer;
-            SaveJson();
+            Artist tc = _context.Artists.Find(artist.Id);
+            if (tc == null) {
+                tc = _context.Artists.Add(_mapper.Parse(artist)).Entity;
+                _context.SaveChanges();
+
+            }
+            tc.Name = artist.Name;
+            tc.Artiststatement = artist.ArtistStatement;
+            tc.Biography = artist.Biography;
+            tc.Location = artist.Location;
+            _context.SaveChanges();
         }
 
-        private void SaveJson()
+
+        public List<mod.Artist> GetArtists()
         {
-            json = JsonSerializer.Serialize(cachedArtists);
-            File.WriteAllText(filepath, json);
+
+            return new List<mod.Artist>();
+
         }
+
 
 
         public bool Exists(int id)
         {
-            return (id < cachedArtists.Count);
+
+            return (_context.Artists.Find(id) != null);
+
         }
 
-        public List<mod.Artist> GetArtists()
-        {
-            if (cachedArtists != null) { return cachedArtists; }
-            try {
 
-                json = File.ReadAllText(filepath);
-                return JsonSerializer.Deserialize<List<mod.Artist>>(json);
-            }
-            catch (Exception) {
-                logging.log("error with repo file, returning new Artist List");
-                return new List<mod.Artist>();
-            }
-        }
-
-        public List<mod.Artist> GetArtistByIds(int[] ids)
-        {
-            List<mod.Artist> subcollection = new List<mod.Artist>();
-                foreach (int id in ids) {
-                        subcollection.Add(cachedArtists[id]);
-                    }
-            return subcollection;
-        }
 
     }
 }

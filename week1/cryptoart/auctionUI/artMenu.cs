@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using auctionDL;
+using System.Linq;
 using mod = auctionModels;
 using Microsoft.EntityFrameworkCore;
 namespace auctionUI
@@ -40,14 +41,19 @@ namespace auctionUI
             Console.WriteLine("Please register as a Seller to continue.\n What is your name?");
             seller.name = Console.ReadLine();
             // collector.registered = true;
-            Console.WriteLine($"Thank you for registering! your customer id is: {seller.Id}");
+           
             sp.Save(seller);
-
+            Console.WriteLine($"Thank you for registering! your customer id is: {seller.Id}");
         }
 
-        void registerNewArtist()
+        void registerNewArtist(ArtistRepo ap)
         {
-
+            Console.WriteLine("Please register to continue. What is your name?");
+            artist.Name = Console.ReadLine();
+            Console.WriteLine("What is your biography?");
+            artist.Biography = Console.ReadLine();
+            Console.WriteLine($"Thank you for registering! your artist id is: {artist.Id}");
+            ap.Save(artist);
         }
 
          void buyArt()
@@ -161,23 +167,35 @@ namespace auctionUI
         }
 
 
-        static void submitArt()
+        public void submitArt()
         {
-            Console.WriteLine("please enter artist Id");
-            artist = new mod.Artist();
-            active = "artist";
-            artist.Id = int.Parse(Console.ReadLine());
-            ArtistRepo cp = new ArtistRepo();
-            artist = cp.AddArtist(artist);
-            if (artist.registered) { Console.WriteLine($"welcome {artist.Name}"); }
-            else {
-                Console.WriteLine("Please register to continue. What is your name?");
-                artist.Name = Console.ReadLine();
-                artist.registered = true;
-                Console.WriteLine("What is your biography?");
-                artist.Biography = Console.ReadLine();
-                Console.WriteLine($"Thank you for registering! your artist id is: {artist.Id}");
-                cp.Save(artist);
+
+            if (active != "artist") {
+                Console.WriteLine("please enter your artist Id");
+                artist = new mod.Artist();
+                active = "artist";
+
+                string userinput = Console.ReadLine();
+                try {
+                    artist.Id = int.Parse(userinput);
+                }
+                catch {
+                    artist.Name = userinput;
+                }
+                ArtistRepo ap = new ArtistRepo(_context, new ArtistMapper());
+               artist = ap.AddArtist(artist);
+
+                if (artist.Name != "") {
+                    Console.WriteLine($"welcome {artist.Name}");
+                    viewProfile();
+                }
+                else {
+                    registerNewArtist(ap);
+                }
+            }
+            insub = true;
+            while (insub) {
+                subMenu();
             }
         }
         static void viewArt()
@@ -247,7 +265,8 @@ namespace auctionUI
             Console.WriteLine("Which Art Piece Do You Want to Auction Off?");
             ArtRepo ap = new ArtRepo(_context, new ArtMapper());
             string artid = Console.ReadLine();
-            if (ap.GetArt(int.Parse(artid),seller.Id)==null) {
+            if (ap.GetArt(int.Parse(artid),seller.Id).Name=="") {
+                Console.WriteLine("this are does not exist in your inventory");
                 return;
             }
             Auction au = new Auction();
@@ -265,12 +284,45 @@ namespace auctionUI
 
 
 
+        public void getInventory()
+        {
+            List<Sellersinventory> inv = _context.Sellersinventories.Where(x => seller.Id == x.Sellerid).Include(y => y.Art).ToList();
+           
+            if (inv.Count < 1) { Console.WriteLine("You have no inventory. log an artist to attach new art to this seller."); }
+            
+            foreach (Sellersinventory i in inv) {
+                Console.WriteLine($"ID: {i.Artid} | {i.Art.Name}");
+            
+            }
 
+        }
+
+
+        public void GetGallery()
+        {
+            List<Artistcollection> ac = _context.Artistcollections.Where(x => artist.Id == x.Artistid).Include(y => y.Art).ToList();
+
+            if (ac.Count < 1) { Console.WriteLine("You have no Art."); }
+
+            foreach (Artistcollection i in ac) {
+                Console.WriteLine($"ID: {i.Artid} | {i.Art.Name}");
+
+            }
+        }
 
         public void listAuctions()
         {
             AuctionRepo cp = new AuctionRepo(_context, new AuctionMapper());
             cp.ShowActiveAuctions();
+
+
+        }
+
+
+        public void attachToSeller()
+        {
+           // AuctionRepo cp = new AuctionRepo(_context, new AuctionMapper());
+           // cp.ShowActiveAuctions();
 
 
         }
@@ -299,9 +351,12 @@ namespace auctionUI
             SellerOptions.Add("profile", new Action(viewProfile));
             SellerOptions.Add("exit", new Action(exit));
             SellerOptions.Add("logout", new Action(logout));
+            SellerOptions.Add("inventory", new Action(getInventory));
             SellerOptions.Add("createAuction", new Action(createAuction));
 
+            ArtistOptions.Add("attach", new Action(attachToSeller));
             ArtistOptions.Add("profile", new Action(viewProfile));
+            ArtistOptions.Add("gallery", new Action(GetGallery));
             ArtistOptions.Add("exit", new Action(exit));
             ArtistOptions.Add("logout", new Action(logout));
 

@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mod = auctionModels;
+using entity = auctionDL;
 namespace auctionDL
 {
-    public interface IartistRepo
+    public interface IArtistMapper
     {
 
-        public mod.Artist AddArtist(mod.Artist newArt);
-        public List<mod.Artist> GetArtists();
-        public bool Exists(int id);
+        public mod.Artist Parse(entity.Artist artist);
+        public entity.Artist Parse(mod.Artist artist);
+
+
+
     }
 }
