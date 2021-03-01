@@ -4,62 +4,57 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
-
+using mod = auctionModels;
 namespace auctionDL
 {
     class BidRepo
     {
 
-        private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("bidData");
-        private List<Bid> cachedBids;
-        public Bid AddBid(Bid newBid)
+        private wzvzhuteContext _context;
+        private IBidMapper _mapper;
+
+        public BidRepo(wzvzhuteContext context, IBidMapper mapper)
         {
-            cachedBids = GetBids();
-
+            _context = context;
+            _mapper = mapper;
+        }
+        public mod.Bid AddBid(mod.Bid newBid)
+        {
             if (Exists(newBid.Id)) {
-                logging.log("Bid Id Exists, No need To Add to List");
-                return newBid;
-            }
+                newBid = _mapper.Parse(_context.Bids.Find(newBid.Id));
 
-            newBid.Id = cachedBids.Count;
-            cachedBids.Add(newBid);
-            
-            logging.log("adding bid " + newBid.Id + " to repository");
-            json = JsonSerializer.Serialize(cachedBids);
-            File.WriteAllText(filepath, json);
+            }
+            else {
+
+                _context.Bids.Add(_mapper.Parse(newBid));
+                _context.SaveChanges();
+
+            }
             return newBid;
         }
 
+        public void Save(mod.Bid bid)
+        {
+            Bid tc = _context.Bids.Find(bid.Id);
+            tc.Amount = (decimal?) bid.BidAmount;
+            tc.Timeofbid = bid.TimeOfBid;
+            _context.SaveChanges();
+        }
+
+
         public bool Exists(int id)
         {
-            return (id < cachedBids.Count);
+
+            return (_context.Bids.Find(id) != null);
+
         }
 
-        public List<Bid> GetBids()
+        public List<mod.Bid> GetBids()
         {
-            if (cachedBids != null) { return cachedBids; }
-            try {
 
-                json = File.ReadAllText(filepath);
-                return JsonSerializer.Deserialize<List<Bid>>(json);
-            }
-            catch (Exception) {
-                logging.log("error with repo file, returning new Bid List");
-                return new List<Bid>();
-            }
+            return new List<mod.Bid>();
+
         }
-
-        public List<Bid> GetBidByIds(int[] ids)
-        {
-            List<Bid> subcollection = new List<Bid>();
-            foreach (int id in ids) {
-                subcollection.Add(cachedBids[id]);
-            }
-            return subcollection;
-        }
-
-
 
 
 

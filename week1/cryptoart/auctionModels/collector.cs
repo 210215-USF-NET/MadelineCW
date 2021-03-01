@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace auctionDL
+namespace auctionModels
 {
     /// <summary>
     /// data structure for a collector;

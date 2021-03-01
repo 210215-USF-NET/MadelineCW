@@ -1,14 +1,14 @@
 ﻿using System;
 
 
-namespace auctionDL
+namespace auctionModels
 {
     public class Auction
     {
         public int Id { get; set; }
         Art auctionItem { get; set; }
-        DateTime closingDate { get; set; }
+       public DateTime? closingDate { get; set; }
         Bid[] Bids {get; set;}
-        int SellerId{get; set;}
+        public int SellerId{get; set;}
     }
 }

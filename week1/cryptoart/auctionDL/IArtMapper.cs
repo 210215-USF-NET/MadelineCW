@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mod = auctionModels;
+
+
 namespace auctionDL
 {
-    interface IartistRepo
+    public interface IArtMapper
     {
+        mod.Art Parse(Art art);
+        Art Parse(mod.Art art);
 
-        public mod.Artist AddArtist(mod.Artist newArt);
-        public List<mod.Artist> GetArtists();
-        public bool Exists(int id);
+
     }
 }

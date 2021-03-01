@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using mod = auctionModels;
 
 namespace auctionDL
 {
     public interface IcollectorRepo
     {
-        public Collector AddCollector(Collector newCollector);
-        public List<Collector> GetCollectors();
+        public mod.Collector AddCollector(mod.Collector newCollector);
+        public List<mod.Collector> GetCollectors();
         public bool Exists(int id);
 
 

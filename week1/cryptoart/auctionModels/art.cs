@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace auctionDL
+namespace auctionModels
 {
     public class Art
     {
@@ -9,7 +9,7 @@ namespace auctionDL
         string name = "";
         string description = "";
         string artiststatement = "";
-        double currentValue = 0.0;
+        decimal currentValue = 0.0M;
         public int Id {
             get {
                 return id;
@@ -17,9 +17,9 @@ namespace auctionDL
             set { id = value; }
         }
 
-        string Name { get { return name; }set { name = value; } }
-        string Description { get { return description; } set { description = value; } }
-        string ArtistStatement { get { return artiststatement; } set { artiststatement = value; } }
+        public string Name { get { return name; }set { name = value; } }
+        public string Description { get { return description; } set { description = value; } }
+        public string ArtistStatement { get { return artiststatement; } set { artiststatement = value; } }
         object[] blacklist {get; set;}
         object [] provenence{get; set;}
         object thumbnail{get; set;}
@@ -27,8 +27,8 @@ namespace auctionDL
         string[] keywords{get;set;}
         int SeriesNumber{get;set;}
         int MaxSeries{get; set;}
-        double BuyNoWPrice{get; set;}
-        double CurrentValue { get { return currentValue; } set { currentValue = value; } }
+        public decimal BuyNoWPrice{get; set;}
+        public decimal CurrentValue { get { return currentValue; } set { currentValue = value; } }
         public override string ToString()
         {
             string s = $"Art:\nId={Id}\nname={Name}\ndescription={Description}\nartistv statement={ArtistStatement}\ncurrent value={CurrentValue}\n";

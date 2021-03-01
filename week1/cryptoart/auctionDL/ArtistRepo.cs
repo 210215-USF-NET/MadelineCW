@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
+using mod = auctionModels;
 
 namespace auctionDL
 {
@@ -14,8 +15,8 @@ namespace auctionDL
     {
         private string json;
         private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artistData");
-        private List<Artist> cachedArtists;
-        public Artist AddArtist(Artist newArtist)
+        private List<mod.Artist> cachedArtists;
+        public mod.Artist AddArtist(mod.Artist newArtist)
         {
             cachedArtists = GetArtists();
 
@@ -32,7 +33,7 @@ namespace auctionDL
             return newArtist;
         }
 
-        public void Save(Artist customer)
+        public void Save(mod.Artist customer)
         {
             cachedArtists[customer.Id] = customer;
             SaveJson();
@@ -50,23 +51,23 @@ namespace auctionDL
             return (id < cachedArtists.Count);
         }
 
-        public List<Artist> GetArtists()
+        public List<mod.Artist> GetArtists()
         {
             if (cachedArtists != null) { return cachedArtists; }
             try {
 
                 json = File.ReadAllText(filepath);
-                return JsonSerializer.Deserialize<List<Artist>>(json);
+                return JsonSerializer.Deserialize<List<mod.Artist>>(json);
             }
             catch (Exception) {
                 logging.log("error with repo file, returning new Artist List");
-                return new List<Artist>();
+                return new List<mod.Artist>();
             }
         }
 
-        public List<Artist> GetArtistByIds(int[] ids)
+        public List<mod.Artist> GetArtistByIds(int[] ids)
         {
-            List<Artist> subcollection = new List<Artist>();
+            List<mod.Artist> subcollection = new List<mod.Artist>();
                 foreach (int id in ids) {
                         subcollection.Add(cachedArtists[id]);
                     }

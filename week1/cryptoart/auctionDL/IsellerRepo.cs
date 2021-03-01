@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-
+using mod = auctionModels;
 
 namespace auctionDL
 {
-    interface IsellerRepo
+    public interface IsellerRepo
     {
 
-        public Seller AddSeller(Seller newSeller);
-        public List<Seller> GetSellers();
+        public mod.Seller AddSeller(mod.Seller newSeller);
+        public List<mod.Seller> GetSellers();
         public bool Exists(int id);
     }
 }

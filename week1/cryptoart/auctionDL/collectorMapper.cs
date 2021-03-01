@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mod = auctionModels;
+//using entity=auctionUI.Entities;
 namespace auctionDL
 {
-    interface Iauctionrepo
+    class collectorMapper
     {
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-
+using mod = auctionModels;
 namespace auctionDL
 {
     interface IBidRepo
     {
-        public Bid AddBid(Bid newBid);
-        public List<Bid> GetBids();
+        public mod.Bid AddBid(mod.Bid newBid);
+        public List<mod.Bid> GetBids();
         public bool Exists(int id);
 
     }

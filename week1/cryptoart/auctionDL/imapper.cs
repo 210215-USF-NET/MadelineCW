@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using mod = auctionModels;
 namespace auctionDL
 {
-    interface IartistRepo
+    public interface imapper
     {
-
-        public mod.Artist AddArtist(mod.Artist newArt);
-        public List<mod.Artist> GetArtists();
-        public bool Exists(int id);
+        mod.Collector ParseCollector(Collector collector);
+        Collector ParseCollector(mod.Collector collector);
     }
 }

@@ -4,56 +4,76 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
-
+using System.Linq;
+using mod = auctionModels;
 namespace auctionDL
 {
-    class SellerRepo : IsellerRepo
+    public class SellerRepo : IsellerRepo
     {
-        private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("sellerData");
-        private List<Seller> cachedSellers;
-        public Seller AddSeller(Seller newSeller)
-        {
-            cachedSellers = GetSellers();
 
+        private wzvzhuteContext _context;
+        private ISellerMapper _mapper;
+
+
+        public SellerRepo(wzvzhuteContext context, ISellerMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+        public mod.Seller AddSeller(mod.Seller newSeller)
+        {
             if (Exists(newSeller.Id)) {
-                logging.log("Seller Id Exists, No need To Add to List");
-                return newSeller;
+                newSeller = _mapper.Parse(_context.Sellers.Find(newSeller.Id));
+
             }
-            newSeller.Id = cachedSellers.Count;
-            cachedSellers.Add(newSeller);
-            logging.log("adding Seller " + newSeller.Id + " to repository");
-            json = JsonSerializer.Serialize(cachedSellers);
-            File.WriteAllText(filepath, json);
+            else {
+
+                _context.Sellers.Add(_mapper.Parse(newSeller));
+                _context.SaveChanges();
+
+            }
             return newSeller;
         }
 
+        public void Save(mod.Seller seller)
+        {
+            Seller tc = _context.Sellers.Find(seller.Id);
+            if (tc == null) {
+                tc = _context.Sellers.Add(_mapper.Parse(seller)).Entity;
+                _context.SaveChanges();
+
+            }
+            tc.Name = seller.name;
+            _context.SaveChanges();
+        }
+
+        public void AddInventory(int id, int sellerid)
+        {
+            Sellersinventory SellInv = new Sellersinventory();
+           if (_context.Sellersinventories.Where(x => x.Artid == id).Count() > 0) {
+                Console.WriteLine("This Art is allready inventoried");
+                return;
+            }
+            else {
+                SellInv.Artid = id;
+                SellInv.Sellerid = id;
+                _context.Sellersinventories.Add(SellInv);
+                _context.SaveChanges();
+            }
+        }
+        public List<mod.Seller> GetSellers()
+        {
+
+            return new List<mod.Seller>();
+
+        }
+
+
         public bool Exists(int id)
         {
-            return (id < cachedSellers.Count);
-        }
 
-        public List<Seller> GetSellers()
-        {
-            if (cachedSellers != null) { return cachedSellers; }
-            try {
+            return (_context.Sellers.Find(id) != null);
 
-                json = File.ReadAllText(filepath);
-                return JsonSerializer.Deserialize<List<Seller>>(json);
-            }
-            catch (Exception) {
-                logging.log("error with repo file, returning new Seller List");
-                return new List<Seller>();
-            }
-        }
-
-        public List<Seller> GetSellerByIds(int[] ids)
-        {
-            List<Seller> subcollection = new List<Seller>();
-            foreach (int id in ids) {
-                subcollection.Add(cachedSellers[id]);
-            }
-            return subcollection;
         }
 
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace auctionDL
+namespace auctionModels
 {
     public class Artist
     {
@@ -23,7 +23,7 @@ namespace auctionDL
         Signature signature;
         public override string ToString()
         {
-            string s = $"Seller:\nId={Id}\nname={name}\nbiography{biography}=";
+            string s = $"Artist:\nId={Id}\nname={name}\nbiography{biography}=";
   
             return s;
         }

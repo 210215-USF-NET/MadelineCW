@@ -4,60 +4,91 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
+using mod=auctionModels;
+using System.Linq;
 
 namespace auctionDL
 {
-    class ArtRepo : IArtRepo
+    public class ArtRepo : IArtRepo
     {
+        private wzvzhuteContext _context;
+        private IArtMapper _mapper;
 
-        private string json;
-        private string filepath = ConfigurationManager.AppSettings.Get("dataRoot") + ConfigurationManager.AppSettings.Get("artData");
-        private List<Art> cachedArt;
-        public Art AddArt(Art newArt)
+        public ArtRepo(wzvzhuteContext context, IArtMapper mapper)
         {
-            cachedArt = GetArt();
-
+            _context = context;
+            _mapper = mapper;
+        }
+        public mod.Art AddArt(mod.Art newArt)
+        {
             if (Exists(newArt.Id)) {
-                logging.log("Art Id Exists, No need To Add to List");
-                return newArt;
+                newArt = _mapper.Parse(_context.Arts.Find(newArt.Id));
+
             }
-            newArt.Id = cachedArt.Count;
-            cachedArt.Add(newArt);
-            logging.log("adding art " + newArt.Id + " to repository");
-            json = JsonSerializer.Serialize(cachedArt);
-            File.WriteAllText(filepath, json);
+            else {
+
+                _context.Arts.Add(_mapper.Parse(newArt));
+                _context.SaveChanges();
+
+            }
             return newArt;
         }
 
+        public void Save(mod.Art art)
+        {
+            Art tc = _context.Arts.Find(art.Id);
+            tc.Name = art.Name;
+            tc.Description = art.Description;
+            tc.Artistcommentary = art.ArtistStatement;
+            tc.Buynowprice = art.BuyNoWPrice;
+            tc.Currentvalue = art.CurrentValue;
+
+
+            _context.SaveChanges();
+        }
+
+
         public bool Exists(int id)
         {
-            return (id < cachedArt.Count);
+
+            return (_context.Arts.Find(id) != null);
+
         }
 
-        public List<Art> GetArt()
+        public List<mod.Art> GetArts()
         {
-            if (cachedArt != null) { return cachedArt; }
-            try {
+           
+            return new List<mod.Art>();
 
-                json = File.ReadAllText(filepath);
-                return JsonSerializer.Deserialize<List<Art>>(json);
-            }
-            catch (Exception) {
-                logging.log("error with repo file, returning new Art List");
-                return new List<Art>();
-            }
         }
 
-        public List<Art> GetArtByIds(int [] ids)
+        public mod.Art GetArt(int id,int sellerid)
         {
-             List<Art> subcollection=new List<Art>();
+            Sellersinventory si = _context.Sellersinventories.Where(x => x.Artid == id&&x.Sellerid==sellerid).FirstOrDefault();
+            if (si == null) {
+                return new mod.Art();
+            }
+            Art art = _context.Arts.Where(x => x.Id == si.Artid).FirstOrDefault();
+            if (si == null) {
+              
+                Console.WriteLine("this Art Is not part of your inventory");
+            }
+            return _mapper.Parse(art);
+
+        }
+
+
+        /*
+        public List<mod.Art> GetArtByIds(int [] ids)
+        {
+             List<mod.Art> subcollection=new List<mod.Art>();
             foreach (int id in ids) {
                 subcollection.Add(cachedArt[id]);
             }
             return subcollection;
         }
 
-
+        */
 
     }
 }

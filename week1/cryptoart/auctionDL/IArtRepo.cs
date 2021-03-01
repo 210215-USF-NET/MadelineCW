@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using mod=auctionModels;
 namespace auctionDL
 {
-    interface IArtRepo
+    public interface IArtRepo
     {
-        public Art AddArt(Art newArt);
-        public List<Art> GetArt();
+        public mod.Art AddArt(mod.Art newArt);
+        public mod.Art GetArt(int id, int sid);
         public bool Exists(int id);
 
 

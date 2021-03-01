@@ -1,134 +1,30 @@
 ﻿using System;
 using Serilog;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using System.Configuration;
 using auctionBL;
 using auctionDL;
+
 namespace auctionUI
 {
     class Program
     {
-        public static Collector collector;
-        public static Artist artist;
-        public static Seller seller;
-        public static string active = "";
-        public static Dictionary<string, Action> actionOptions = new Dictionary<string, Action>();
-
-        void registerNewCollector()
-        {
-
-        }
-
-        void registerNewSeller()
-        {
-
-        }
-
-        void registerNewArtist()
-        {
-
-        }
-
-        static void buyArt()
-        {
-            Console.WriteLine("please enter your customer Id");
-            collector = new Collector();
-            active = "collector";
-            collector.Id = int.Parse(Console.ReadLine());
-            collectrepo cp = new collectrepo();
-            collector=cp.AddCollector(collector);
-            if (collector.registered) { Console.WriteLine($"welcome {collector.Name}"); }
-            else {
-                Console.WriteLine("Please register to continue. What is your name?");
-                collector.Name = Console.ReadLine();
-                collector.registered = true;
-                Console.WriteLine("What country are you ordering from?");
-                collector.Location = Console.ReadLine();
-                Console.WriteLine($"Thank you for registering! your customer id is: {collector.Id}");
-                cp.SaveCollector(collector);
-            }
-        }
-        static void sellArt()
-        {
-            Console.WriteLine("please enter your seller Id");
-  
-            }
-        
-
-    static void submitArt()
-    {
-        Console.WriteLine("please enter artist Id");
-        artist = new Artist();
-        active = "artist";
-        artist.Id = int.Parse(Console.ReadLine());
-        ArtistRepo cp = new ArtistRepo();
-        artist = cp.AddArtist(artist);
-        if (artist.registered) { Console.WriteLine($"welcome {artist.Name}"); }
-        else {
-            Console.WriteLine("Please register to continue. What is your name?");
-            artist.Name = Console.ReadLine();
-            artist.registered = true;
-            Console.WriteLine("What is your biography?");
-            artist.Biography = Console.ReadLine();
-            Console.WriteLine($"Thank you for registering! your artist id is: {artist.Id}");
-            cp.Save(artist);
-        }
-    }
-        static void viewArt()
-        {
-
-        }
-        static void viewBids()
-        {
-
-        }
-        static void viewProfile()
-        {
-            switch(active){
-                case "collector":
-                    Console.WriteLine(collector.ToString());
-                    break;
-                case "artist":
-                    Console.WriteLine(artist.ToString());
-                    break;
-
-            }
-        }
-        static void exit()
-        {
-            Environment.Exit(0);
-        }
-        static void menuOptions()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("buyArt\nsellArt\nsubmitArt\n");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-
-            actionOptions[Console.ReadLine()]();
-        }
 
         static void Main(string[] args)
         {
             logging.init();
-            actionOptions.Add("buy", new Action(buyArt));
-            actionOptions.Add("sell", new Action(sellArt));
-            actionOptions.Add("submit", new Action(submitArt));
-            actionOptions.Add("viewArt", new Action(viewArt));
-            actionOptions.Add("viewBids", new Action(viewBids));
-            actionOptions.Add("profile", new Action(viewProfile));
-            actionOptions.Add("exit", new Action(exit));
-            Console.WriteLine("Welcome to Scarcity: your number one platform for CryptoArt;\n Please Enter What Fuction you'd like to perform.\n");
+        
+            string connectionString = ConfigurationManager.AppSettings.Get("dbconnect");
+            DbContextOptions<wzvzhuteContext> options = new DbContextOptionsBuilder<wzvzhuteContext>()
+            .UseNpgsql(connectionString)
+            .Options;
+            using var context = new wzvzhuteContext(options);
 
-            while (true) {
-                menuOptions();
-                /*
-                try { menuOptions(); }
-                catch {
-                    Console.WriteLine("please enter a valid option");
-                    
-                }
-                */
-            }
+            artMenu menu = new artMenu(context);
+            menu.Start();
 
 
 

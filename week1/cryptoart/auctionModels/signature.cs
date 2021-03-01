@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace auctionDL
+namespace auctionModels
 {
     public class Signature
     {
