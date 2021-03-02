@@ -17,6 +17,7 @@ namespace auctionDL
         public int? Artid { get; set; }
         public decimal? Minimumamount { get; set; }
         public DateTime? Closingdate { get; set; }
+        public int? Notify { get; set; }
 
         public virtual Art Art { get; set; }
         public virtual Seller Seller { get; set; }

@@ -28,9 +28,9 @@ namespace auctionDL
             }
             else {
 
-                _context.Sellers.Add(_mapper.Parse(newSeller));
+               Seller addedSeller = _context.Sellers.Add(_mapper.Parse(newSeller)).Entity;
                 _context.SaveChanges();
-
+                newSeller = _mapper.Parse(addedSeller);
             }
             return newSeller;
         }
@@ -56,7 +56,7 @@ namespace auctionDL
             }
             else {
                 SellInv.Artid = id;
-                SellInv.Sellerid = id;
+                SellInv.Sellerid = sellerid;
                 _context.Sellersinventories.Add(SellInv);
                 _context.SaveChanges();
             }

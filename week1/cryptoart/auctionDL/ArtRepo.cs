@@ -61,7 +61,25 @@ namespace auctionDL
             return new List<mod.Art>();
 
         }
+        public void ShowArtByArtist(int id)
+        {
 
+            List<Art> al = _context.Arts.Where(x => x.Artistid == id).ToList();
+            Console.ForegroundColor = ConsoleColor.Green;
+            foreach (Art a in al) {
+                if (_context.Sellersinventories.Where(x => a.Id == x.Artid).Count() > 0 || _context.Collectorsinventories.Where(x => a.Id == x.Artid).Count() > 0) {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("This art belongs to an inventory");
+                }
+                Console.WriteLine("--------------------");
+                Console.WriteLine($"Art Id : {a.Id}");
+                Console.WriteLine($"Name: {a.Name}");
+                Console.WriteLine($"Description:{a.Description}");
+                Console.WriteLine("--------------------");
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+        }
         public mod.Art GetArt(int id,int sellerid)
         {
             Sellersinventory si = _context.Sellersinventories.Where(x => x.Artid == id&&x.Sellerid==sellerid).FirstOrDefault();

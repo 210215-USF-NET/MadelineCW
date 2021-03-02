@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Configuration;
 using auctionBL;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using mod = auctionModels;
 
@@ -28,7 +29,7 @@ namespace auctionDL
 
         public Bid GetHighBid(Auction a2b)
         {
-            Bid hiBid = _context.Bids.Where(x => x.Auctionid == a2b.Id).OrderBy(y => y.Amount).FirstOrDefault();
+            Bid hiBid = _context.Bids.Where(x => x.Auctionid == a2b.Id).OrderByDescending(y => y.Amount).FirstOrDefault();
             return hiBid;
         }
 
@@ -62,6 +63,64 @@ namespace auctionDL
             _context.SaveChanges();
         }
 
+        public bool CheckForComission(int artistid)
+        {
+            DateTime dt = DateTime.Now;
+
+            List<Auction> activeAuctions = _context.Auctions.Where(x => x.Closingdate <= dt && (x.Notify & 4) != 4).Include(y => y.Art).Include(z => z.Bids).ToList();
+            foreach (Auction ac in activeAuctions) {
+                
+                if (ac.Art.Artistid == artistid) {
+                    Console.WriteLine($"Congatulations! your art piece {ac.Art.Name} sold for {ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault().Amount} !");
+                    ac.Notify += 4;
+                    _context.SaveChanges();
+                }
+            }
+            return false;
+        }
+
+
+        public bool CheckForSale(int sellerid)
+        {
+            DateTime dt = DateTime.Now;
+
+            List<Auction> activeAuctions = _context.Auctions.Where(x => x.Closingdate <= dt && (x.Notify & 2) != 2 && x.Sellerid==sellerid).Include(y => y.Art).Include(z => z.Bids).ToList();
+            foreach (Auction ac in activeAuctions) {
+
+                    Console.WriteLine($"Congatulations! your art piece {ac.Art.Name} sold for {ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault().Amount} !");
+                Sellersinventory si = new Sellersinventory();
+                si.Artid = System.Convert.ToInt32(ac.Artid);
+                si.Sellerid = sellerid;
+                _context.Sellersinventories.Remove(_context.Sellersinventories.Where(x=>x.Artid==ac.Artid).FirstOrDefault());
+                   ac.Notify += 2;
+                    _context.SaveChanges();
+            }
+            return false;
+        }
+
+        public bool CheckForWin(int collectorid)
+        {
+            DateTime dt = DateTime.Now;
+
+            List<Auction> activeAuctions = _context.Auctions.Where(x => x.Closingdate <= dt && (x.Notify & 1)!=1).Include(y => y.Art).Include(z => z.Bids).ToList();
+
+            foreach (Auction ac in activeAuctions) {
+                Bid bid = ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault();
+                Console.WriteLine(bid.Collectorid);
+                if (bid.Collectorid==collectorid) {
+                    Console.WriteLine($"Congatulations! You had the winning bid of {bid.Amount} on the art piece {ac.Art.Name} ! Enjoy your art!");
+
+                    Collectorsinventory ci = new Collectorsinventory();
+                    int id = System.Convert.ToInt32(ac.Artid);
+                    ci.Artid = id;
+                    ci.Collectorid = collectorid;
+                    _context.Collectorsinventories.Add(ci);
+                    ac.Notify += 1;
+                    _context.SaveChanges();
+                }
+            }
+            return false;
+        }
 
         public bool Exists(int id)
         {
@@ -94,7 +153,7 @@ namespace auctionDL
                 Console.WriteLine($"Closes at :{a.Closingdate}");
                 Art art = _context.Arts.Where(x => x.Id == a.Artid).FirstOrDefault();
                 Console.WriteLine($"For Art :{art.Name}");
-                Bid bid = _context.Bids.Where(x => x.Auctionid == a.Id).OrderBy(y=>y.Amount).FirstOrDefault();
+                Bid bid = _context.Bids.Where(x => x.Auctionid == a.Id).OrderByDescending(y=>y.Amount).FirstOrDefault();
                 if (bid != null) {
                     Console.WriteLine($"Current Winning Bid :{bid.Amount}");
                 }

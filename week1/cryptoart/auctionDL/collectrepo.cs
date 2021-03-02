@@ -45,16 +45,18 @@ namespace auctionDL
             return customer;
         }
     
-        public void SaveCollector(mod.Collector customer) {
+        public mod.Collector SaveCollector(mod.Collector customer) {
             Collector tc = _context.Collectors.Find(customer.Id);
             if (tc == null) {
                tc=_context.Collectors.Add(_mapper.ParseCollector(customer)).Entity;
                 _context.SaveChanges();
+                return _mapper.ParseCollector(tc);
                
             }
             tc.Name = customer.Name;
             tc.Location = customer.Location;
             _context.SaveChanges();
+            return _mapper.ParseCollector(tc);
         }
 
 

@@ -28,20 +28,17 @@ namespace auctionUI
         {
             Console.WriteLine("Please register as a Collector to continue.\n What is your name?");
             collector.Name = Console.ReadLine();
-           // collector.registered = true;
             Console.WriteLine("What country are you ordering from?");
             collector.Location = Console.ReadLine();
+            
+            collector=cp.SaveCollector(collector);
             Console.WriteLine($"Thank you for registering! your customer id is: {collector.Id}");
-            cp.SaveCollector(collector);
-
         }
 
         void registerNewSeller(SellerRepo sp)
         {
             Console.WriteLine("Please register as a Seller to continue.\n What is your name?");
-            seller.name = Console.ReadLine();
-            // collector.registered = true;
-           
+            seller.name = Console.ReadLine();           
             sp.Save(seller);
             Console.WriteLine($"Thank you for registering! your customer id is: {seller.Id}");
         }
@@ -78,6 +75,7 @@ namespace auctionUI
                     registerNewCollector(cp);
                 }
             }
+            insub = true;
             while (insub) {
                 subMenu();
             }
@@ -87,8 +85,9 @@ namespace auctionUI
         }
 
 
-        static void subMenu()
+        public void subMenu()
         {
+            CheckForWins();
             switch (active) {
                 case "collector":
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -164,6 +163,7 @@ namespace auctionUI
         {
 
             if (active != "artist") {
+                insub = true;
                 Console.WriteLine("please enter your artist Id");
                 artist = new mod.Artist();
                 active = "artist";
@@ -186,15 +186,42 @@ namespace auctionUI
                     registerNewArtist(ap);
                 }
             }
+
             insub = true;
             while (insub) {
                 subMenu();
             }
         }
+
+
+        public void CheckForWins()
+        {
+            AuctionRepo ap = new AuctionRepo(_context, new AuctionMapper());
+            switch (active) {
+                case "artist":
+                    ap.CheckForComission(artist.Id);
+                    break;
+                case "seller":
+                    ap.CheckForSale(seller.Id);
+                    break;
+                case "collector":
+                    ap.CheckForWin(collector.Id);
+                    break;
+            
+            }
+
+        }
+
+
         static void viewArt()
         {
 
         }
+        public void viewBidsbyArt()
+        {
+
+        }
+
         public void viewBids()
         {
             BidRepo bp = new BidRepo(_context, new BidMapper());
@@ -227,7 +254,6 @@ namespace auctionUI
             foreach (KeyValuePair<string, Action> item in actionOptions) {
                 Console.WriteLine(item.Key);
             }
-//            Console.WriteLine("buyArt\nsellArt\nsubmitArt\n");
             Console.ForegroundColor = ConsoleColor.Yellow;
 
 
@@ -236,8 +262,13 @@ namespace auctionUI
         static void logout()
         {
             insub = false;
-            
-        }
+            active = "";
+            collector=new mod.Collector();
+            artist= new mod.Artist();
+            seller=new mod.Seller();
+
+
+    }
        public void bid()
         {
             listAuctions();
@@ -318,16 +349,26 @@ namespace auctionUI
         }
 
 
+        /*    public void GetGallery()
+            {
+                List<Artistcollection> ac = _context.Artistcollections.Where(x => artist.Id == x.Artistid).Include(y => y.Art).ToList();
+
+                if (ac.Count < 1) { Console.WriteLine("You have no Art."); }
+
+                foreach (Artistcollection i in ac) {
+                    Console.WriteLine($"ID: {i.Artid} | {i.Art.Name}");
+
+                }
+            }
+        */
+
+
+
         public void GetGallery()
         {
-            List<Artistcollection> ac = _context.Artistcollections.Where(x => artist.Id == x.Artistid).Include(y => y.Art).ToList();
+            ArtRepo ap = new ArtRepo(_context, new ArtMapper());
+            ap.ShowArtByArtist(artist.Id);
 
-            if (ac.Count < 1) { Console.WriteLine("You have no Art."); }
-
-            foreach (Artistcollection i in ac) {
-                Console.WriteLine($"ID: {i.Artid} | {i.Art.Name}");
-
-            }
         }
 
         public void listAuctions()
@@ -341,9 +382,19 @@ namespace auctionUI
 
         public void attachToSeller()
         {
-           // AuctionRepo cp = new AuctionRepo(_context, new AuctionMapper());
-           // cp.ShowActiveAuctions();
-
+            SellerRepo cp = new SellerRepo(_context, new SellerMapper());
+            ArtRepo ap = new ArtRepo(_context, new ArtMapper());
+            ap.ShowArtByArtist(artist.Id);
+            Console.WriteLine("Please enter the id of the art you'de like to attach");
+            int artid = int.Parse(Console.ReadLine());
+            Console.WriteLine("Please Enter the id of the seller you'de like to attach to.");
+            int sellid = int.Parse(Console.ReadLine());
+            try {
+                cp.AddInventory(artid, sellid);
+            }
+            catch (Exception){
+                Console.WriteLine("There was an issue with attachment, please try again.");
+            }
 
         }
         public void Start()
@@ -384,13 +435,6 @@ namespace auctionUI
 
             while (true) {
                 menuOptions();
-                /*
-                try { menuOptions(); }
-                catch {
-                    Console.WriteLine("please enter a valid option");
-                    
-                }
-                */
             }
         }
 

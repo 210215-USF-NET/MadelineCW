@@ -58,7 +58,7 @@ namespace auctionDL
                     Console.WriteLine($" your bid {b.Amount}");
                     Console.WriteLine($"made at {b.Timeofbid}");
                     Console.WriteLine($"Bid Closes at {auc.Closingdate}");
-                    Console.WriteLine($"Winning Bid so far : {_context.Bids.Where(x=>x.Auctionid==auc.Id).OrderBy(y=>y.Amount).FirstOrDefault().Amount}");
+                    Console.WriteLine($"Winning Bid so far : {_context.Bids.Where(x=>x.Auctionid==auc.Id).OrderByDescending(y=>y.Amount).FirstOrDefault().Amount}");
                     Console.WriteLine("------------------");
                 }
             }

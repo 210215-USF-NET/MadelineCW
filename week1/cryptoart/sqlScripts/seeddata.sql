@@ -24,6 +24,32 @@ insert into Artist(
 ('googoo','NZ','Goo Goo','','')
 
 
+insert into Artist(
+	Name,
+	Location,
+	Signature,
+	ArtistStatement,
+	Biography)
+ values
+(
+'Blue Heart',
+	'US',
+	'Blue',
+	'We exist in the intersection between fields of reality and dreams, stare in awe the liminal space',
+	'Blue Heart has arted for 162 years, winner of the blue hearty grand prize 10 years in a row'),
+	('ludwig popper',
+	 'UK',
+	 'LP',
+	 'Simplicity is useful, complexity divine',
+	 'I''m too modest to talk about my extraordinary life'
+),
+('Mama Moomin','IT','MMoo','Art is for hanging on your walls and should by pastoral','Mama Moomin is the proud mother of 13 cats and lives on a farm raising goats, which she uses as inpiration for her art')
+
+
+
 insert  into Seller (Name) values ('Mads','Lucy')
 
-
+insert  into art (Name,Location,Description,Artistcommentary,MaxSeries,Buynowprice,Currentvalue) 
+values ('Shatter', 'US','A photo of broken glass','shatter your conceptions',1,35.00,300.00),
+('A field of Broken Skies', 'IT','The world swirls with silver tears among a beautiful goat farm','Bah',1,42.66,71.95),
+('Scratchy Painting','UK','random scribbles on a canvas,'all the beats are made of stars',1,0.05,1000.00)

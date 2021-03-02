@@ -10,6 +10,7 @@ namespace auctionDL
         public Artist()
         {
             Artistcollections = new HashSet<Artistcollection>();
+            Arts = new HashSet<Art>();
         }
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace auctionDL
         public string Country { get; set; }
 
         public virtual ICollection<Artistcollection> Artistcollections { get; set; }
+        public virtual ICollection<Art> Arts { get; set; }
     }
 }

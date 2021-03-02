@@ -30,7 +30,14 @@ namespace auctionDL
         public virtual DbSet<Seller> Sellers { get; set; }
         public virtual DbSet<Sellersinventory> Sellersinventories { get; set; }
 
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseNpgsql("User ID=wzvzhute;Password=GKLj1EB_Vcb7bzi2_H5IKFwkK5xv1Gp-;Server=ziggy.db.elephantsql.com;Port=5432;Database=wzvzhute;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +88,8 @@ namespace auctionDL
 
                 entity.Property(e => e.Artistcommentary).HasColumnName("artistcommentary");
 
+                entity.Property(e => e.Artistid).HasColumnName("artistid");
+
                 entity.Property(e => e.Artpiece).HasColumnName("artpiece");
 
                 entity.Property(e => e.Buynowprice)
@@ -108,6 +117,11 @@ namespace auctionDL
                 entity.Property(e => e.Seriesnumber).HasColumnName("seriesnumber");
 
                 entity.Property(e => e.Thumbnail).HasColumnName("thumbnail");
+
+                entity.HasOne(d => d.Artist)
+                    .WithMany(p => p.Arts)
+                    .HasForeignKey(d => d.Artistid)
+                    .HasConstraintName("artistid");
             });
 
             modelBuilder.Entity<Artist>(entity =>
@@ -176,6 +190,10 @@ namespace auctionDL
                 entity.Property(e => e.Minimumamount)
                     .HasColumnType("money")
                     .HasColumnName("minimumamount");
+
+                entity.Property(e => e.Notify)
+                    .HasColumnName("notify")
+                    .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Sellerid).HasColumnName("sellerid");
 

@@ -27,7 +27,9 @@ namespace auctionDL
         public int? Maxseries { get; set; }
         public decimal? Buynowprice { get; set; }
         public decimal? Currentvalue { get; set; }
+        public int? Artistid { get; set; }
 
+        public virtual Artist Artist { get; set; }
         public virtual ICollection<Artistcollection> Artistcollections { get; set; }
         public virtual ICollection<Auction> Auctions { get; set; }
         public virtual ICollection<Blacklist> Blacklists { get; set; }
