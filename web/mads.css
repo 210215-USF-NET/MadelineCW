@@ -1,0 +1,17 @@
+﻿body {
+	font-family: 'Alien League';
+	font-size: 40px;
+	background-image:url('bg.jpg');
+	background-attachment:fixed;
+	font-weight:bold;
+	color:aqua;
+}
+.mads1 {
+
+}
+a {color:yellow;
+}
+a:hover {
+	font-size: 105px;
+	cursor:grab;
+}

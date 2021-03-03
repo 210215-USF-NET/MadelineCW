@@ -24,15 +24,25 @@ namespace auctionDL
         }
         public mod.Artist AddArtist(mod.Artist newArtist)
         {
-            if (Exists(newArtist.Id)) {
+
+            try {
+                if (newArtist.Id < 1) {
+                    //_context.Collectors.Load();
+                    newArtist = _mapper.Parse(_context.Artists.Where(x => x.Name.ToLower() == newArtist.Name.ToLower()).FirstOrDefault());
+                }
+            }
+            catch { Console.WriteLine("what the?"); }
+                if (Exists(newArtist.Id)) {
                 newArtist = _mapper.Parse(_context.Artists.Find(newArtist.Id));
 
             }
             else {
 
-                _context.Artists.Add(_mapper.Parse(newArtist));
-                _context.SaveChanges();
-
+                Artist a = new Artist();
+               _context.Artists.Add(a);
+               _context.SaveChanges();
+                newArtist = _mapper.Parse(a);
+               
             }
             return newArtist;
         }

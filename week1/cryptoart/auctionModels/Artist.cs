@@ -5,7 +5,7 @@ namespace auctionModels
     public class Artist
     {
         private string countryCode="";
-        int id = -1;
+        int id;
         string name = "";
         string biography = "";
         public bool registered { get; set; }

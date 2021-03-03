@@ -22,6 +22,15 @@ namespace auctionDL
         }
         public mod.Seller AddSeller(mod.Seller newSeller)
         {
+
+            try {
+                if (newSeller.Id < 1) {
+                    //_context.Collectors.Load();
+                    newSeller = _mapper.Parse(_context.Sellers.Where(x => x.Name.ToLower() == newSeller.name.ToLower()).FirstOrDefault());
+
+                }
+            }
+            catch { }
             if (Exists(newSeller.Id)) {
                 newSeller = _mapper.Parse(_context.Sellers.Find(newSeller.Id));
 

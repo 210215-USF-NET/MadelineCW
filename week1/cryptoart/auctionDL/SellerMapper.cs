@@ -7,12 +7,18 @@ namespace auctionDL
 
         public mod.Seller Parse(entity.Seller seller)
         {
-            return new mod.Seller {
-                name = seller.Name,
+            if (seller != null) {
+                return new mod.Seller {
+                    name = seller.Name,
 
-                Id = seller.Id
+                    Id = seller.Id
 
-            };
+                };
+
+            }
+            else {
+                return new mod.Seller();
+                }
         }
 
         public entity.Seller Parse(mod.Seller seller)

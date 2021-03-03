@@ -72,6 +72,7 @@ namespace auctionDL
                 
                 if (ac.Art.Artistid == artistid) {
                     Console.WriteLine($"Congatulations! your art piece {ac.Art.Name} sold for {ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault().Amount} !");
+                    ac.Art.Currentvalue = ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault().Amount;
                     ac.Notify += 4;
                     _context.SaveChanges();
                 }
@@ -91,8 +92,13 @@ namespace auctionDL
                 Sellersinventory si = new Sellersinventory();
                 si.Artid = System.Convert.ToInt32(ac.Artid);
                 si.Sellerid = sellerid;
-                _context.Sellersinventories.Remove(_context.Sellersinventories.Where(x=>x.Artid==ac.Artid).FirstOrDefault());
-                   ac.Notify += 2;
+                try {
+                    _context.Sellersinventories.Remove(_context.Sellersinventories.Where(x => x.Artid == ac.Artid).FirstOrDefault());
+                }
+                catch { }
+
+                ac.Art.Currentvalue = ac.Bids.Where(z => z.Timeofbid < ac.Closingdate).OrderByDescending(x => x.Amount).FirstOrDefault().Amount;
+                ac.Notify += 2;
                     _context.SaveChanges();
             }
             return false;
@@ -114,7 +120,10 @@ namespace auctionDL
                     int id = System.Convert.ToInt32(ac.Artid);
                     ci.Artid = id;
                     ci.Collectorid = collectorid;
-                    _context.Collectorsinventories.Add(ci);
+                    if (_context.Collectorsinventories.Where(x => x.Artid == ci.Artid).Count() < 1) {
+                        _context.Collectorsinventories.Add(ci);
+                    }
+                    ac.Art.Currentvalue = bid.Amount;
                     ac.Notify += 1;
                     _context.SaveChanges();
                 }

@@ -54,13 +54,19 @@ namespace auctionDL
             foreach (Bid b in blist) {
                 List <Auction> la= _context.Auctions.Where(k => k.Id == b.Auctionid).ToList();
                 foreach (Auction auc in la) {
-                    Console.WriteLine(_context.Arts.Where(x => x.Id == auc.Artid).FirstOrDefault().Name);
-                    Console.WriteLine($" your bid {b.Amount}");
-                    Console.WriteLine($"made at {b.Timeofbid}");
-                    Console.WriteLine($"Bid Closes at {auc.Closingdate}");
-                    Console.WriteLine($"Winning Bid so far : {_context.Bids.Where(x=>x.Auctionid==auc.Id).OrderByDescending(y=>y.Amount).FirstOrDefault().Amount}");
-                    Console.WriteLine("------------------");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    if (auc.Closingdate < DateTime.Now) {
+                        Console.ForegroundColor=ConsoleColor.Gray;
+                    }
+                        Console.WriteLine(_context.Arts.Where(x => x.Id == auc.Artid).FirstOrDefault().Name);
+                        Console.WriteLine($" your bid {b.Amount}");
+                        Console.WriteLine($"made at {b.Timeofbid}");
+                        Console.WriteLine($"Bid Closes at {auc.Closingdate}");
+                        Console.WriteLine($"Winning Bid so far : {_context.Bids.Where(x => x.Auctionid == auc.Id).OrderByDescending(y => y.Amount).FirstOrDefault().Amount}");
+                        Console.WriteLine("------------------");
+
                 }
+               
             }
         }
         public bool Exists(int id)
